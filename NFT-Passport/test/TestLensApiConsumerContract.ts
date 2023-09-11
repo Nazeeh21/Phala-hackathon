@@ -36,7 +36,7 @@ describe("TestLensApiConsumerContract", function () {
 
     // Make a request
     const profileId = "0x01";
-    const tx = await consumer.request(profileId);
+    const tx = await consumer.request("0x01", "AK551", "2021-10-10");
     const receipt = await tx.wait();
     const reqEvents = receipt.events;
     expect(reqEvents![0]).to.have.property("event", "MessageQueued");

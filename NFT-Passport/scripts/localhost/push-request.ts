@@ -2,7 +2,9 @@ import { ethers } from "hardhat";
 import "dotenv/config";
 
 async function main() {
-  const TestLensApiConsumerContract = await ethers.getContractFactory("TestLensApiConsumerContract");
+  const TestLensApiConsumerContract = await ethers.getContractFactory(
+    "TestLensApiConsumerContract"
+  );
 
   const [deployer] = await ethers.getSigners();
 
@@ -13,24 +15,29 @@ async function main() {
   }
   const consumer = TestLensApiConsumerContract.attach(consumerSC);
   console.log("Pushing a request...");
-  await consumer.connect(deployer).request("0x01");
-  consumer.on("ResponseReceived", async (reqId: number, pair: string, value: string) => {
-    console.info("Received event [ResponseReceived]:", {
-      reqId,
-      pair,
-      value,
-    });
-    process.exit();
-  });
-  consumer.on("ErrorReceived", async (reqId: number, pair: string, value: string) => {
-    console.info("Received event [ErrorReceived]:", {
-      reqId,
-      pair,
-      value,
-    });
-    process.exit();
-  });
-
+  await consumer.connect(deployer).request("0x01", "AK551", "2021-10-10");
+  consumer.on(
+    "ResponseReceived",
+    async (reqId: number, pair: string, value: string) => {
+      console.info("Received event [ResponseReceived]:", {
+        reqId,
+        pair,
+        value,
+      });
+      process.exit();
+    }
+  );
+  consumer.on(
+    "ErrorReceived",
+    async (reqId: number, pair: string, value: string) => {
+      console.info("Received event [ErrorReceived]:", {
+        reqId,
+        pair,
+        value,
+      });
+      process.exit();
+    }
+  );
 }
 
 // We recommend this pattern to be able to use async/await everywhere

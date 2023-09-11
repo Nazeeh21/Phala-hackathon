@@ -55,7 +55,6 @@ const DUMMY_FLIGHT_DATA = {
   live: null,
 };
 
-
 type HexString = `0x${string}`;
 
 // eth abi coder
@@ -196,7 +195,6 @@ export default function main(request: HexString): HexString {
 
   try {
     const res = fetchFlightData(flightNumber, date);
-    console.log("res: ", res);
     const departureCity = res.departure.timezone;
     const arrivalCity = res.arrival.timezone;
     const airline = res.airline.name;

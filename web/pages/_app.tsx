@@ -1,5 +1,6 @@
 import { Layout } from "@/MyComponents/Layout";
 import "@/styles/globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import type { AppProps } from "next/app";
 import {
