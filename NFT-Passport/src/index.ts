@@ -127,8 +127,8 @@ function fetchFlightData(flightNumber: string, date: string): any {
     // @ts-expect-error
     return JSON.parse(DUMMY_FLIGHT_DATA);
   }
-
-  // console.log("res from api: ", JSON.parse(respBody).data[0]);
+// @ts-expect-error
+  console.log("res from api: ", JSON.parse(respBody).data[0]);
 
   // if (typeof respBody !== "object") {
   //   throw Error.FailedToDecode;
