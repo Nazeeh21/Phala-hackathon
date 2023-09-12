@@ -173,7 +173,7 @@ export default function main(request: HexString): HexString {
   let requestId, encodedFlightNumber, encodedDate;
   try {
     [requestId, encodedFlightNumber, encodedDate] = Coders.decode(
-      [uintCoder, bytesCoder, bytesCoder],
+      [uintCoder, stringCoder, stringCoder],
       request
     );
     console.log(

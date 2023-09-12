@@ -19,7 +19,7 @@ export default function Home() {
   const debouncedFlightNumber = useDebounce(fligthNumber, 500);
   const debouncedDepartureDate = useDebounce(departureDate, 500);
 
-  const responseEvent = useContractEvent({
+   useContractEvent({
     address: CONTRACT_ADDRESS,
     abi: ContractAbi.abi,
     eventName: "ResponseReceived",
@@ -28,7 +28,7 @@ export default function Home() {
     },
   });
 
-  const errorEvent = useContractEvent({
+  useContractEvent({
     address: CONTRACT_ADDRESS,
     abi: ContractAbi.abi,
     eventName: "ErrorReceived",
@@ -48,7 +48,7 @@ export default function Home() {
     address: CONTRACT_ADDRESS,
     abi: ContractAbi.abi,
     functionName: "request",
-    args: [debouncedFlightNumber, debouncedDepartureDate, new Date()],
+    // args: [debouncedFlightNumber, debouncedDepartureDate, new Date()],
   });
 
   return (
@@ -60,7 +60,9 @@ export default function Home() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          write?.();
+          write?.({
+            args: [debouncedFlightNumber, debouncedDepartureDate, new Date()]
+          });
         }}
         className="flex flex-col gap-2"
       >
