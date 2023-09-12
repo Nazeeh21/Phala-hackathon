@@ -60,12 +60,13 @@ type HexString = `0x${string}`;
 // eth abi coder
 const uintCoder = new Coders.NumberCoder(32, false, "uint256");
 const bytesCoder = new Coders.BytesCoder("bytes");
+const stringCoder = new Coders.StringCoder("string");
 
 function encodeReply(
   reply: [number, number, string, string, string]
 ): HexString {
   return Coders.encode(
-    [uintCoder, uintCoder, bytesCoder, bytesCoder, bytesCoder],
+    [uintCoder, uintCoder, stringCoder, stringCoder, stringCoder],
     reply
   ) as HexString;
 }
@@ -127,7 +128,7 @@ function fetchFlightData(flightNumber: string, date: string): any {
     // @ts-expect-error
     return JSON.parse(DUMMY_FLIGHT_DATA);
   }
-// @ts-expect-error
+  // @ts-expect-error
   console.log("res from api: ", JSON.parse(respBody).data[0]);
 
   // if (typeof respBody !== "object") {
