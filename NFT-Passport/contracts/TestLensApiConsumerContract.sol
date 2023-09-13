@@ -1,33 +1,46 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "./PhatRollupAnchor.sol";
+import "./TravelNFT.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TestLensApiConsumerContract is PhatRollupAnchor, Ownable {
+    struct RequestStruct {
+        address requester;
+        string date;
+        uint requestid;
+        bool malformed;
+    }
+
     event ResponseReceived(
         uint reqId,
-        string pair,
+        RequestStruct requestStruct,
         string departureCity,
         string arrivalCity,
         string airline
     );
     event ErrorReceived(
         uint reqId,
-        string pair,
+        RequestStruct requestStruct,
         string departureCity,
         string arrivalCity,
         string airline
     );
 
+    
+
     uint constant TYPE_RESPONSE = 0;
     uint constant TYPE_ERROR = 2;
+    TravelNFT public travelNft;
 
-    mapping(uint => string) requests;
+    mapping(uint => RequestStruct) requests;
+    mapping(address => uint256[]) userToTokenId;
     uint nextRequest = 1;
 
     constructor(address phatAttestor) {
         _grantRole(PhatRollupAnchor.ATTESTOR_ROLE, phatAttestor);
+        travelNft = new TravelNFT();
     }
 
     function setAttestor(address phatAttestor) public {
@@ -36,26 +49,31 @@ contract TestLensApiConsumerContract is PhatRollupAnchor, Ownable {
 
     function request(
         string calldata flightNumber,
-        string memory date,
-        string memory currentTimeStamp
+        string memory date
     ) public {
         // assemble the request
         uint id = nextRequest;
-        requests[id] = currentTimeStamp;
+        requests[id] = RequestStruct(msg.sender, date, id, false);
         _pushMessage(abi.encode(id, flightNumber, date));
         nextRequest += 1;
+    }
+
+    function saveDetails(string memory tokenURI) public returns (uint256) {
+        uint256 tokenId = travelNft.mint(msg.sender, tokenURI);
+        userToTokenId[msg.sender].push(tokenId);
+        return tokenId;
     }
 
     // For test
     function malformedRequest(bytes calldata malformedData) public {
         uint id = nextRequest;
-        requests[id] = "malformed_req";
+        requests[id].malformed = true;
         _pushMessage(malformedData);
         nextRequest += 1;
     }
 
     function _onMessageReceived(bytes calldata action) internal override {
-        require(action.length == 32 * 5, "cannot parse action");
+        // require(action.length == 32 * 5, "cannot parse action");
         (
             uint respType,
             uint id,

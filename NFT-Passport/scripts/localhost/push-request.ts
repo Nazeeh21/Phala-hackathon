@@ -15,7 +15,7 @@ async function main() {
   }
   const consumer = TestLensApiConsumerContract.attach(consumerSC);
   console.log("Pushing a request...");
-  await consumer.connect(deployer).request("0x01", "AK551", "2021-10-10");
+  await consumer.connect(deployer).request("0x01", "AK551");
   consumer.on(
     "ResponseReceived",
     async (reqId: number, pair: string, value: string) => {

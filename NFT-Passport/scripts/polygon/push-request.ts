@@ -13,7 +13,7 @@ async function main() {
   ])
 
   console.log('Pushing a request...');
-  await consumer.connect(deployer).request("0x01", "AK551", "2021-10-10");
+  await consumer.connect(deployer).request("0x01", "AK551");
   console.log('Done');
 }
 

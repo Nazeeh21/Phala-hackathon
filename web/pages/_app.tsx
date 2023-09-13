@@ -8,13 +8,13 @@ import {
   configureChains,
   createConfig,
 } from "wagmi";
-import { hardhat } from "wagmi/chains";
+import { hardhat, polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 
 const { chains, publicClient } = configureChains(
-  [hardhat],
+  [polygonMumbai],
   [
     // alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
     publicProvider(),

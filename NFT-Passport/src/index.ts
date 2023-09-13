@@ -97,19 +97,6 @@ function errorToCode(error: Error): number {
   }
 }
 
-function isHexString(str: string): boolean {
-  const regex = /^0x[0-9a-f]+$/;
-  return regex.test(str.toLowerCase());
-}
-
-function stringToHex(str: string): string {
-  var hex = "";
-  for (var i = 0; i < str.length; i++) {
-    hex += str.charCodeAt(i).toString(16);
-  }
-  return "0x" + hex;
-}
-
 const AviationAPI = "http://api.aviationstack.com/v1/flights";
 function fetchFlightData(flightNumber: string, date: string): any {
   let response = pink.batchHttpRequest(
@@ -126,7 +113,7 @@ function fetchFlightData(flightNumber: string, date: string): any {
 
   if (response.statusCode !== 200) {
     // @ts-expect-error
-    return JSON.parse(DUMMY_FLIGHT_DATA);
+    return JSON.parse(DUMMY_FLIGHT_DATA).data[0];
   }
   // @ts-expect-error
   console.log("res from api: ", JSON.parse(respBody).data[0]);
@@ -138,20 +125,12 @@ function fetchFlightData(flightNumber: string, date: string): any {
   return JSON.parse(respBody).data[0];
 }
 
-function parseProfileId(hexx: string): string {
-  var hex = hexx.toString();
-  if (!isHexString(hex)) {
-    throw Error.BadLensProfileId;
+function checkFlightNumber(flightNumber: string): boolean {
+  if (!/^0x0$/i.test(flightNumber)) {
+    return false;
   }
-  hex = hex.slice(2);
-  var str = "";
-  for (var i = 0; i < hex.length; i += 2) {
-    const ch = String.fromCharCode(parseInt(hex.substring(i, i + 2), 16));
-    str += ch;
-  }
-  return str;
+  return true
 }
-
 //
 // Here is what you need to implemented for Phat Function, you can customize your logic with
 // JavaScript here.
@@ -189,13 +168,23 @@ export default function main(request: HexString): HexString {
       "0x0",
     ]);
   }
-  const flightNumber = parseProfileId(encodedFlightNumber as string);
-  const date = parseProfileId(encodedDate as string);
+  const flightNumber = checkFlightNumber(encodedFlightNumber as string);
+  const date = checkFlightNumber(encodedDate as string);
   console.log(`Request received for flightNumber ${flightNumber}`);
   console.log(`Request received for date ${date}`);
+  // if (!flightNumber || !date) {
+  //   console.info("Malformed request received");
+  //   return encodeReply([
+  //     TYPE_ERROR,
+  //     0,
+  //     `${errorToCode(Error.MalformedRequest)}`,
+  //     "0x0",
+  //     "0x0",
+  //   ]);
+  // }
 
   try {
-    const res = fetchFlightData(flightNumber, date);
+    const res = fetchFlightData(encodedFlightNumber, encodedDate);
     const departureCity = res.departure.timezone;
     const arrivalCity = res.arrival.timezone;
     const airline = res.airline.name;
