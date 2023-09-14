@@ -1,6 +1,6 @@
 import { useAccount, useContractRead } from "wagmi";
-import ContractAbi from "../../NFT-Passport/artifacts/contracts/TestLensApiConsumerContract.sol/TestLensApiConsumerContract.json";
-import TravelNFTContractAbi from "../../NFT-Passport/artifacts/contracts/TravelNFT.sol/TravelNFT.json";
+import ContractAbi from "../artifacts/contracts/TestLensApiConsumerContract.sol/TestLensApiConsumerContract.json";
+import TravelNFTContractAbi from "../artifacts/contracts/TravelNFT.sol/TravelNFT.json";
 
 import { useContract, useNFT } from "@thirdweb-dev/react";
 import { TravelNFT } from "@/MyComponents/TravelNFT";

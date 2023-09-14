@@ -8,7 +8,7 @@ import {
   usePrepareContractWrite,
 } from "wagmi";
 import { useDebounce } from "usehooks-ts";
-import ContractAbi from "../../NFT-Passport/artifacts/contracts/TestLensApiConsumerContract.sol/TestLensApiConsumerContract.json";
+import ContractAbi from "../artifacts/contracts/TestLensApiConsumerContract.sol/TestLensApiConsumerContract.json";
 import clsx from "clsx";
 import { createHelia } from "helia";
 import { json } from "@helia/json";
@@ -85,10 +85,10 @@ export default function Home() {
           <div>Departure City: {airlineData.departureCity}</div>
           <div>Arrival City: {airlineData.arrivalCity}</div>
           <button
-           className={clsx(
-            "p-2 bg-slate-200 border-2 border-blue-700 rounded-md",
-            !writeSaveDetails && "opacity-50 cursor-not-allowed"
-          )}
+            className={clsx(
+              "p-2 bg-slate-200 border-2 border-blue-700 rounded-md",
+              !writeSaveDetails && "opacity-50 cursor-not-allowed"
+            )}
             disabled={!writeSaveDetails}
             onClick={async () => {
               let req = new XMLHttpRequest();
@@ -101,12 +101,14 @@ export default function Home() {
                   });
                 }
               };
-                
+
               req.open("POST", "https://api.jsonbin.io/v3/b", true);
               req.setRequestHeader("Content-Type", "application/json");
-              req.setRequestHeader("X-Master-Key", process.env.NEXT_PUBLIC_MASTER_KEY!);
-              req.send('${airlineData}')
-              
+              req.setRequestHeader(
+                "X-Master-Key",
+                process.env.NEXT_PUBLIC_MASTER_KEY!
+              );
+              req.send("${airlineData}");
             }}
           >
             Mint NFT
