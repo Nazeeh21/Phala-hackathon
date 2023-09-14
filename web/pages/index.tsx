@@ -15,7 +15,7 @@ import { json } from "@helia/json";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const CONTRACT_ADDRESS = "0x842216dDE3e9B8c2C4B140124211e4D90D9aeD9d";
+const CONTRACT_ADDRESS = "0x80FEa1f8F3964c06E38DBB4714D04dE80C8a5FCf";
 
 type AirlineDataType = {
   airline: string;
@@ -91,13 +91,22 @@ export default function Home() {
           )}
             disabled={!writeSaveDetails}
             onClick={async () => {
-              const helia = await createHelia();
-              const j = json(helia);
-              const airlineDataAddress = await j.add(airlineData);
+              let req = new XMLHttpRequest();
 
-              writeSaveDetails?.({
-                args: [airlineDataAddress],
-              });
+              req.onreadystatechange = () => {
+                if (req.readyState == XMLHttpRequest.DONE) {
+                  console.log(req.responseText);
+                  writeSaveDetails?.({
+                    args: [req?.response.data?.metadata?.id],
+                  });
+                }
+              };
+                
+              req.open("POST", "https://api.jsonbin.io/v3/b", true);
+              req.setRequestHeader("Content-Type", "application/json");
+              req.setRequestHeader("X-Master-Key", process.env.NEXT_PUBLIC_MASTER_KEY!);
+              req.send('${airlineData}')
+              
             }}
           >
             Mint NFT

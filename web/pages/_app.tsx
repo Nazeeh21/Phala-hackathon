@@ -3,15 +3,11 @@ import "@/styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import type { AppProps } from "next/app";
-import {
-  WagmiConfig,
-  configureChains,
-  createConfig,
-} from "wagmi";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { hardhat, polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
-
+import { ThirdwebProvider } from "@thirdweb-dev/react";
 
 const { chains, publicClient } = configureChains(
   [polygonMumbai],
@@ -33,12 +29,14 @@ const wagmiConfig = createConfig({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <ThirdwebProvider activeChain="mumbai">
+      <WagmiConfig config={wagmiConfig}>
+        <RainbowKitProvider chains={chains}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </ThirdwebProvider>
   );
 }

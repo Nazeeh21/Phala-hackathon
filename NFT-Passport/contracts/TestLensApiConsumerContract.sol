@@ -28,14 +28,12 @@ contract TestLensApiConsumerContract is PhatRollupAnchor, Ownable {
         string airline
     );
 
-    
-
     uint constant TYPE_RESPONSE = 0;
     uint constant TYPE_ERROR = 2;
     TravelNFT public travelNft;
 
     mapping(uint => RequestStruct) requests;
-    mapping(address => uint256[]) userToTokenId;
+    mapping(address => uint256[]) public userToTokenId;
     uint nextRequest = 1;
 
     constructor(address phatAttestor) {
@@ -43,14 +41,15 @@ contract TestLensApiConsumerContract is PhatRollupAnchor, Ownable {
         travelNft = new TravelNFT();
     }
 
+    function getUserTokenIds(address user) public view returns (uint256[] memory) {
+        return userToTokenId[user];
+    }
+
     function setAttestor(address phatAttestor) public {
         _grantRole(PhatRollupAnchor.ATTESTOR_ROLE, phatAttestor);
     }
 
-    function request(
-        string calldata flightNumber,
-        string memory date
-    ) public {
+    function request(string calldata flightNumber, string memory date) public {
         // assemble the request
         uint id = nextRequest;
         requests[id] = RequestStruct(msg.sender, date, id, false);
@@ -60,7 +59,9 @@ contract TestLensApiConsumerContract is PhatRollupAnchor, Ownable {
 
     function saveDetails(string memory tokenURI) public returns (uint256) {
         uint256 tokenId = travelNft.mint(msg.sender, tokenURI);
-        userToTokenId[msg.sender].push(tokenId);
+        uint256[] storage tokenIds = userToTokenId[msg.sender];
+        tokenIds.push(tokenId);
+        userToTokenId[msg.sender] = tokenIds;
         return tokenId;
     }
 
